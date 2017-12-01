@@ -29,7 +29,7 @@ from Gradient import Gradient
 
 class MovingAverage():
     def __init__(self,data,MAType,MAWindow,**kwargs):
-        self.data=data.fillna(method='bfill', axis=1)
+        self.data=data.fillna(method='bfill', axis=1)  # Single column dataframe 
         self.MAType=MAType
         self.MAWindow=MAWindow
         if kwargs!={}:
@@ -76,7 +76,10 @@ class MovingAverage():
         self.data.fillna(0,inplace=True)
     def CalcTradeSignal(self):
         """Calc Trade Signal"""
-        self.data['signal']=list(np.where(self.data['MA'] == 0, 0, np.where(self.data[self.column] >= self.data['MA'], 1, -1)))
+        temp=list(np.where(self.data['MA'] == 0, 0, np.where(self.data[self.column] >=self.data['MA'], 1, -1)))
+        if self.MAType=='EMA':
+            temp[0]=0
+        self.data['signal']=temp
         return self.data['signal'].tolist()
     def CalcDevFromMa(self):
         """Deviation from MA (bonds: minus, else: %)"""

@@ -35,8 +35,11 @@ from UtilityClass import UtilityClass
 
 class Turtle():
     def __init__(self,data,outWindow,inWindow,*assetType):
-        oldName=data.columns[0]
-        data.rename(columns={oldName:'Close'},inplace=True)
+        if 'PX_LAST' in data.columns:
+            data.rename(columns={'PX_LAST':'Close'},inplace=True)
+        else:
+            oldName=data.columns[0]
+            data.rename(columns={oldName:'Close'},inplace=True)
         if len(data.columns)==1:  # Check if x is just 'Close'
             data['Open']=data['Close']
             data['High']=data['Close']
@@ -116,7 +119,7 @@ class Turtle():
         """calc the location in the range"""
         if self.tradeSignal[i]==0:
             Range=self.breakOutRange['RollMax'].iloc[i]-self.breakOutRange['RollMin'].iloc[i]
-            r=(self.data['Close'].iloc[i]-self.breakOutRange['RollMin'].iloc[i])/Range
+            r=(self.data['Close'].iloc[i]-self.breakOutRange['RollMin'].iloc[i]+0.0)/Range
         return r
     def CalcPctMoveFromBreakOut(self,spot,entry,shortOrLong):
         """calc location between maxPnL and breakout"""
@@ -129,14 +132,14 @@ class Turtle():
             if self.assetType=="bond":
                 pct = -(spot - entry)  # if Short and a bond
             else:
-                pct = -((spot/entry)-1)*100;
+                pct = -((spot+0.0)/entry-1)*100;
         return pct
     def CalcBreakoutLocation(self):
         """Gives location range [0,1] for all winning trades. Note that -/+ represents long or short trades."""
         self.breakoutLocation=list(np.zeros(len(self.pctMoveFromBreakOut)))
         for i in range(len(self.pctMoveFromBreakOut)):
             if self.maxMoveFromBreakOut[i]!=0 and self.pctMoveFromBreakOut[i]>0:
-                self.breakoutLocation[i]=(self.pctMoveFromBreakOut[i]/self.maxMoveFromBreakOut[i])*self.tradeSignal[i]
+                self.breakoutLocation[i]=((self.pctMoveFromBreakOut[i]+0.0)/self.maxMoveFromBreakOut[i])*self.tradeSignal[i]
     def CalcTodayData(self):
         self.tradeSignalToday=self.tradeSignal[-1]
         self.tradeDaysToday = self.tradeDays[-1]
@@ -186,11 +189,11 @@ class Turtle():
 
 
 
-
+"""
 
 if __name__ == "__main__":
     data=pd.read_excel("c:\Book1.xlsx")
     data.set_index("Date",inplace=True)
     t=Turtle(data,3,5)
     
-    
+"""    
