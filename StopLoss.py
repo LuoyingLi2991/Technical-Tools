@@ -16,6 +16,8 @@ class StopLoss:
      # Constructor
      def __init__(self,data,tradeSignal):
          self.data=data
+         self.x=data[data.columns[0]].tolist()
+         self.dates=data.index.tolist()
          self.height=len(data)
          self.tradeSignal=tradeSignal
          self.numTrades=self.CountTrades()

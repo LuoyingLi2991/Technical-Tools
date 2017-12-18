@@ -85,10 +85,5 @@ class Daily():
         return hilo
 
 
-if __name__ == "__main__":
-    data=pd.read_excel("c:\Book1.xlsx",'Sheet3')
-    data.set_index("Date",inplace=True)
-    s=Daily(data)
-    print s.findYesterdayHiLo(20)
-    print s.find24hrHiLo(20)
+
                               

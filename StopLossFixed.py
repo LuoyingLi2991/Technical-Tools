@@ -20,6 +20,7 @@ class StopLossFixed(StopLoss):
         self.stop=stop
         self.stopFilteredSignal=self.RunStopLoss()
         self.stopRatio=self.CalcStopRatio()
+        
     # Set Stop Level
     def CalcStopLevel(self,entryLevel, tradeSignal):
         sLevel=[]

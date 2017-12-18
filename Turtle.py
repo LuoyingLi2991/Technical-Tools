@@ -45,6 +45,8 @@ class Turtle():
             data['High']=data['Close']
             data['Low']=data['Close']
         self.data=data.fillna(method='bfill', axis=1)  # Pre-Clean Data for NaN
+        self.dates=self.data.index.tolist()
+        self.x=self.data[self.data.columns[0]].tolist()
         if assetType!=():  # optional parameter
             self.assetType='bond'
         else:
@@ -94,6 +96,10 @@ class Turtle():
                     self.rangeLocation[i] = self.CalcRangeLocation(i) 
                     self.entryLevel=0
                     maxTradePnL=0
+                elif self.data['Low'].iloc[i]<self.breakOutRange['RollMin'].iloc[i]:
+                    self.tradeSignal[i]=-1
+                    self.tradeDays[i]=-1
+                    self.entryLevel=self.breakOutRange['RollMin'].iloc[i]
                 else:
                     self.tradeSignal[i]=1  # Stay Long
                     self.tradeDays[i]=self.tradeDays[i-1]+1
@@ -108,6 +114,10 @@ class Turtle():
                     self.rangeLocation[i]=self.CalcRangeLocation(i)
                     self.entryLevel=0
                     maxTradePnL=0
+                elif self.data['High'].iloc[i]>self.breakOutRange['RollMax'].iloc[i]:
+                    self.tradeSignal[i]=1
+                    self.tradeDays[i]=1
+                    self.entryLevel=self.breakOutRange['RollMax'].iloc[i]
                 else:
                     self.tradeSignal[i]=-1  # stay short
                     self.tradeDays[i]=self.tradeDays[i-1]-1
@@ -127,7 +137,7 @@ class Turtle():
             if self.assetType=='bond':  # if Long and a Bond
                 pct=spot-entry
             else:
-                pct=(spot/entry-1)*100
+                pct=((spot+0.0)/entry-1)*100
         else:
             if self.assetType=="bond":
                 pct = -(spot - entry)  # if Short and a bond

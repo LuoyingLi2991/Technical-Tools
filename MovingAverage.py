@@ -30,6 +30,8 @@ from Gradient import Gradient
 class MovingAverage():
     def __init__(self,data,MAType,MAWindow,**kwargs):
         self.data=data.fillna(method='bfill', axis=1)  # Single column dataframe 
+        self.x=self.data[self.data.columns[0]].tolist()
+        self.dates=self.data.index.tolist()
         self.MAType=MAType
         self.MAWindow=MAWindow
         if kwargs!={}:
@@ -49,6 +51,7 @@ class MovingAverage():
         self.TradeSignal=self.CalcTradeSignal()  # Calculate the Simple Score
         self.devFromMa=self.CalcDevFromMa()  # calc devFrom MA
         self.CalcToday()  # Today's Data
+        self.getGradient()
     def getGradient(self):
         """Constructs Gradient Object"""
         self.gg=Gradient(self.data['MA'].to_frame(),self.gradWindow)  # Create Gradient Object

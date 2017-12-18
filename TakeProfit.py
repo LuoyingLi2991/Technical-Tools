@@ -25,6 +25,8 @@ class TakeProfit:
     __metaclass__ = abc.ABCMeta
     def __init__(self,data,tradeSignal):
         self.data=data
+        self.x=data[data.columns[0]].tolist()
+        self.dates=data.index.tolist()
         self.height=len(self.data)
         self.tradeSignal=tradeSignal
         self.numTrades=self.CountTrades()
@@ -65,7 +67,7 @@ class TakeProfit:
                     if self.tradeSignal[i]==1 and self.data[self.data.columns[0]].iloc[i]<self.takeProfitLevelSeries[i-1,0]:
                         takeProfitHit=1
                         self.BookTrade(tradeNumber,max(self.takeProfitLevelSeries[i-1,:]),1)
-                        self.takeProfitFilterSignal[i,1]=0
+                        self.takeProfitFilterSignal[i]=0
                         self.tradeEntryLevel = 0
                         highWaterMark = 0
                         self.takeProfitFilterFX[i] =max(self.takeProfitLevelSeries[i-1,:])
@@ -73,7 +75,7 @@ class TakeProfit:
                     elif self.tradeSignal[i]==-1 and self.data[self.data.columns[0]].iloc[i]>self.takeProfitLevelSeries[i-1,1]:
                         takeProfitHit=1
                         self.BookTrade(tradeNumber, self.takeProfitLevelSeries[i-1,-1],1)
-                        self.takeProfitFilterSignal[i,1]=0
+                        self.takeProfitFilterSignal[i]=0
                         self.tradeEntryLevel = 0
                         highWaterMark = 0
                         self.takeProfitFilterFX[i] =max(self.takeProfitLevelSeries[i-1,:])

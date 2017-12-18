@@ -31,6 +31,8 @@ import pandas as pd
 class DoubleMA():
     def __init__(self,data,fastType,fastWindow,fastGradWindow,slowType,slowWindow,slowGradWindow,spreadGradWindow):
         self.data=data.fillna(method='bfill', axis=1)
+        self.x=self.data[self.data.columns[0]].tolist()
+        self.dates=self.data.index.tolist()
         self.height=len(self.data)
         self.spreadGradWindow=spreadGradWindow
         self.TodayStatics={}
